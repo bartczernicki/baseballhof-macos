@@ -16,8 +16,8 @@ namespace MachineLearningBaseBallHOF
             var validationDataPath = "HOFValidation.txt";
 
             Console.WriteLine("Starting Baseball HOF Training");
-			Console.WriteLine("******************************");
-			Console.WriteLine();
+            Console.WriteLine("******************************");
+            Console.WriteLine();
 
             // 1) Create a new learning pipeline
             var pipeline = new LearningPipeline();
@@ -52,12 +52,15 @@ namespace MachineLearningBaseBallHOF
             	MVPs = 0,
             	YearsPlayed = 2
             };
-			var result = model.Predict(samplePredictionBadPlayer);
+            var result = model.Predict(samplePredictionBadPlayer);
 
-			Console.WriteLine("Bad Baseball Player Prediction");
+            Console.WriteLine("Bad Baseball Player Prediction");
             Console.WriteLine("******************************");
-			Console.WriteLine("HOF Prediction: " + result.PredictedLabel.ToString() + " | " + "Probability: " + result.ProbabilityLabel);
-			Console.WriteLine();
+            Console.WriteLine("HOF Prediction: " + result.PredictedLabel.ToString() + " | " + "Probability: " + result.ProbabilityLabel);
+            Console.WriteLine();
+			Console.WriteLine("Bad Baseball Player Prediction");
+
+
 
 			// Great Player
             var samplePredictionGreatPlayer = new BaseballData
@@ -71,13 +74,14 @@ namespace MachineLearningBaseBallHOF
                 MVPs = 2,
                 YearsPlayed = 18
             };
-			var greatPlayerPrediction = model.Predict(samplePredictionGreatPlayer);
+            var greatPlayerPrediction = model.Predict(samplePredictionGreatPlayer);
 
             Console.WriteLine("Great Baseball Player Prediction");
             Console.WriteLine("******************************");
-			Console.WriteLine("HOF Prediction: " + greatPlayerPrediction.PredictedLabel.ToString() + " | " + "Probability: " + greatPlayerPrediction.ProbabilityLabel);
+            Console.WriteLine("HOF Prediction: " + greatPlayerPrediction.PredictedLabel.ToString() + " | " + "Probability: " + greatPlayerPrediction.ProbabilityLabel);
             Console.WriteLine();
-
+            Console.WriteLine();
+            
 
             // 7) Load Evaluation Data
             var testData = new TextLoader<BaseballData>(validationDataPath, useHeader: false, separator: ",");
