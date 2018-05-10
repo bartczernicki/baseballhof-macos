@@ -16,6 +16,8 @@ namespace MachineLearningBaseBallHOF
             var validationDataPath = "HOFValidation.txt";
 
             Console.WriteLine("Starting Baseball HOF Training");
+			Console.WriteLine("******************************");
+			Console.WriteLine();
 
             // 1) Create a new learning pipeline
             var pipeline = new LearningPipeline();
@@ -36,19 +38,46 @@ namespace MachineLearningBaseBallHOF
             // 5) Train Model
             var model = pipeline.Train<BaseballData, BaseballDataPrediction>();
 
-            // 6) Sample Prediction
-            var samplePrediction = new BaseballData
+            // 6) Sample Predictions
+
+            // Bad Player
+            var samplePredictionBadPlayer = new BaseballData
             {
-            	AB = 100,
-            	AllStarAppearances = 3,
-            	FullPlayerName = "dfd",
-            	H = 400,
-            	ID = 3343,
+            	AB = 1000,
+            	AllStarAppearances = 0,
+            	FullPlayerName = "Bad Player",
+            	H = 100,
+            	ID = 10101,
             	Label = false,
-            	MVPs = 1,
-            	YearsPlayed = 10
+            	MVPs = 0,
+            	YearsPlayed = 2
             };
-            var result = model.Predict(samplePrediction);
+			var result = model.Predict(samplePredictionBadPlayer);
+
+			Console.WriteLine("Bad Baseball Player Prediction");
+            Console.WriteLine("******************************");
+			Console.WriteLine("HOF Prediction: " + result.PredictedLabel.ToString() + " | " + "Probability: " + result.ProbabilityLabel);
+			Console.WriteLine();
+
+			// Great Player
+            var samplePredictionGreatPlayer = new BaseballData
+            {
+                AB = 10000,
+                AllStarAppearances = 10,
+                FullPlayerName = "Great Player",
+                H = 3400,
+                ID = 20202,
+                Label = false,
+                MVPs = 2,
+                YearsPlayed = 18
+            };
+			var greatPlayerPrediction = model.Predict(samplePredictionGreatPlayer);
+
+            Console.WriteLine("Great Baseball Player Prediction");
+            Console.WriteLine("******************************");
+			Console.WriteLine("HOF Prediction: " + greatPlayerPrediction.PredictedLabel.ToString() + " | " + "Probability: " + greatPlayerPrediction.ProbabilityLabel);
+            Console.WriteLine();
+
 
             // 7) Load Evaluation Data
             var testData = new TextLoader<BaseballData>(validationDataPath, useHeader: false, separator: ",");
