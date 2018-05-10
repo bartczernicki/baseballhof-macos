@@ -12,7 +12,7 @@ namespace MachineLearningBaseBallHOF
     {
 		static void Main(string[] args)
 		{
-			var trainingDataPath = "HOFTraining.txt";
+            var trainingDataPath = "HOFTraining.txt";
             var validationDataPath = "HOFValidation.txt";
 
 			Console.WriteLine("Starting Baseball HOF Training");
@@ -57,14 +57,14 @@ namespace MachineLearningBaseBallHOF
 			var evaluator = new BinaryClassificationEvaluator() { ProbabilityColumn = "Probability" };
 			var metrics = evaluator.Evaluate(model, testData);
             
-			// 9) Print out Metrics (rounded to 4 decimals)
-			Console.WriteLine("******************");
-			Console.WriteLine("Evaluation Metrics");
-			Console.WriteLine("******************");
-			Console.WriteLine("AUC Score:  " + Math.Round(metrics.Auc, 4).ToString());
-			Console.WriteLine("Precision:  " + Math.Round(metrics.PositivePrecision, 4).ToString());
-			Console.WriteLine("Recall:     " + Math.Round(metrics.PositiveRecall, 4).ToString());
-			Console.WriteLine("Accuracy:   " + Math.Round(metrics.Accuracy, 4).ToString());
+            // 9) Print out Metrics (rounded to 4 decimals)
+            Console.WriteLine("******************");
+            Console.WriteLine("Evaluation Metrics");
+            Console.WriteLine("******************");
+            Console.WriteLine("AUC Score:  " + Math.Round(metrics.Auc, 4).ToString());
+            Console.WriteLine("Precision:  " + Math.Round(metrics.PositivePrecision, 4).ToString());
+            Console.WriteLine("Recall:     " + Math.Round(metrics.PositiveRecall, 4).ToString());
+            Console.WriteLine("Accuracy:   " + Math.Round(metrics.Accuracy, 4).ToString());
             Console.WriteLine("******************");
 
 			//10) Persist trained model
