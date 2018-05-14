@@ -8,4 +8,19 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.ML" Version="0.1.0" />
   </ItemGroup>
+  <ItemGroup>
+    <Compile Remove="MachineLearningBaseBallHOF.Utils.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Remove="SmallVal.txt" />
+    <None Remove="HOFValidation2.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Update="HOFValidation.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="HOFTraining.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
 </Project>
