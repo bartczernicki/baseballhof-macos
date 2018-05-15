@@ -16,7 +16,6 @@
     <None Remove="HOFValidation2.txt" />
     <None Remove="HOFTraining.csv" />
     <None Remove="HOFValidation.txt" />
-    <None Remove="HOFValidation.csv" />
   </ItemGroup>
   <ItemGroup>
     <None Update="HOFTraining.txt">
