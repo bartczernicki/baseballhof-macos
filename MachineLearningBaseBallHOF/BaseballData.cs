@@ -75,6 +75,7 @@ namespace MachineLearningBaseBallHOF
         }
     }
 
+
     public class BaseballDataPrediction
     {
         [ColumnName("PredictedLabel")]

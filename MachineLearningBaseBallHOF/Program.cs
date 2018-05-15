@@ -11,6 +11,7 @@ using MachineLearningBaseBallHOF;
 using Microsoft.ML.Runtime.Data;
 using Microsoft.ML.Runtime.EntryPoints;
 
+
 namespace MachineLearningBaseBallHOF
 {
     public class Program
