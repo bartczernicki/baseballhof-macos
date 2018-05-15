@@ -14,12 +14,15 @@
   <ItemGroup>
     <None Remove="SmallVal.txt" />
     <None Remove="HOFValidation2.txt" />
+    <None Remove="HOFTraining.csv" />
+    <None Remove="HOFValidation.txt" />
+    <None Remove="HOFValidation.csv" />
   </ItemGroup>
   <ItemGroup>
-    <None Update="HOFValidation.txt">
+    <None Update="HOFTraining.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="HOFTraining.txt">
+    <None Update="HOFValidation.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>

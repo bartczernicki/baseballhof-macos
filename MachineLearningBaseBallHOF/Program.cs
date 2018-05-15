@@ -72,6 +72,8 @@ namespace MachineLearningBaseBallHOF
                 HR = 10,
                 RBI = 20,
                 SB = 5,
+                BattingAverage = 0.1f,
+                SluggingPct = 0.25f,
                 PlayerID = 10101,
                 Label = false,
                 MVPs = 0,
@@ -101,6 +103,8 @@ namespace MachineLearningBaseBallHOF
                 HR = 600,
                 RBI = 1200,
                 SB = 400,
+                BattingAverage = 0.32f,
+                SluggingPct = 0.55f,
                 PlayerID = 20202,
                 Label = true,
                 MVPs = 3,
@@ -135,7 +139,7 @@ namespace MachineLearningBaseBallHOF
 
             using (var environment = new TlcEnvironment())
             {
-                var customSchema = "col=Label:BL:0 col=FullPlayerName:TX:1 col=YearsPlayed:R4:2 col=AB:R4:3 col=R:R4:4 col=H:R4:5 col=Doubles:R4:6 col=Triples:R4:7 col=HR:R4:8 col=RBI:R4:9 col=SB:R4:10 col=AllStarAppearances:R4:11 col=MVPs:R4:12 col=TripleCrowns:R4:13 col=GoldGloves:R4:14 col=MajorLeaguePlayerOfTheYearAwards:R4:15 col=PlayerID:R4:16 Separator=,";
+                var customSchema = "col=Label:BL:0 col=FullPlayerName:TX:1 col=YearsPlayed:R4:2 col=AB:R4:3 col=R:R4:4 col=H:R4:5 col=Doubles:R4:6 col=Triples:R4:7 col=HR:R4:8 col=RBI:R4:9 col=SB:R4:10 col=BattingAverage:R4:11 col=SluggingPct:R4:12 col=AllStarAppearances:R4:13 col=MVPs:R4:14 col=TripleCrowns:R4:15 col=GoldGloves:R4:16 col=MajorLeaguePlayerOfTheYearAwards:R4:17 col=LastYearPlayed:R4:18 col=PlayerID:R4:19 Separator=,";
                 var inputFile = new SimpleFileHandle(environment, validationDataPath, false, false);
                 var dataView = ImportTextData.ImportText(environment, new ImportTextData.Input { InputFile = inputFile, CustomSchema = customSchema }).Data;
 

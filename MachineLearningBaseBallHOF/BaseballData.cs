@@ -42,21 +42,30 @@ namespace MachineLearningBaseBallHOF
         public float SB;
 
         [Column("11")]
-        public float AllStarAppearances;
+        public float BattingAverage;
 
         [Column("12")]
-        public float MVPs;
+        public float SluggingPct;
 
         [Column("13")]
-        public float TripleCrowns;
+        public float AllStarAppearances;
 
         [Column("14")]
-        public float GoldGloves;
+        public float MVPs;
 
         [Column("15")]
-        public float MajorLeaguePlayerOfTheYearAwards;
+        public float TripleCrowns;
 
         [Column("16")]
+        public float GoldGloves;
+
+        [Column("17")]
+        public float MajorLeaguePlayerOfTheYearAwards;
+
+        [Column("18")]
+        public float LastYearPlayed;
+
+        [Column("19")]
         public float PlayerID;
 
         public override string ToString()
