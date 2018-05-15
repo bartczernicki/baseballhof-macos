@@ -2,7 +2,7 @@
 Visual Studio for Mac Console project using ML.NET .NET Core library to predict Baseball Hall Of Fame Induction for batters.
 
 Project Uses:
-- Selected historical baseball batting data from 1900-2015
+- Selected historical baseball batting data from 1900-2017
 - Visual Studio for Mac (macOS) 7.5
 - ML.NET Package (Machine Learning .NET library)
 - .NET Core 2.x SDK
