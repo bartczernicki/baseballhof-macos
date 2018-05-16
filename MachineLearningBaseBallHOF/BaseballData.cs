@@ -63,15 +63,18 @@ namespace MachineLearningBaseBallHOF
         public float MajorLeaguePlayerOfTheYearAwards;
 
         [Column("18")]
-        public float LastYearPlayed;
+        public float TB;
 
         [Column("19")]
+        public float LastYearPlayed;
+
+        [Column("20")]
         public float PlayerID;
 
         public override string ToString()
         {
             var test = string.Empty;
-            return FullPlayerName + " | ID: " + PlayerID + " | Years: " + YearsPlayed + " | AllStarAppearances: " + AllStarAppearances + " | H: " + H;
+            return FullPlayerName + " | ID: " + PlayerID + " | Years: " + YearsPlayed + " | AllStarAppearances: " + AllStarAppearances + " | H: " + H + " | MVPs: " + MVPs + " | TB: " + TB + " ";
         }
     }
 

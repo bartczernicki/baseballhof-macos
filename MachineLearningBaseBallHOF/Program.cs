@@ -33,7 +33,7 @@ namespace MachineLearningBaseBallHOF
             // 3) Create Features
             pipeline.Add(new ColumnConcatenator("Features", "YearsPlayed",
             "AB", "R", "H", "Doubles", "Triples", "HR", "RBI", "SB",
-            "AllStarAppearances", "MVPs", "TripleCrowns", "GoldGloves", "MajorLeaguePlayerOfTheYearAwards"));
+            "AllStarAppearances", "MVPs", "TripleCrowns", "GoldGloves", "MajorLeaguePlayerOfTheYearAwards", "TB"));
 
             // pipeline.Add(new ColumnConcatenator("Features", "YearsPlayed"));
 
@@ -81,7 +81,8 @@ namespace MachineLearningBaseBallHOF
                 GoldGloves = 0,
                 MajorLeaguePlayerOfTheYearAwards = 0,
                 TripleCrowns = 0,
-                YearsPlayed = 2
+                YearsPlayed = 2,
+                TB = 190
             };
             var result = model.Predict(samplePredictionBadPlayer);
 
@@ -112,8 +113,8 @@ namespace MachineLearningBaseBallHOF
                 GoldGloves = 8,
                 MajorLeaguePlayerOfTheYearAwards = 4,
                 TripleCrowns = 2,
-                //SB = 200,
-                YearsPlayed = 22
+                YearsPlayed = 22,
+                TB = 6700
             };
             var greatPlayerPrediction = model.Predict(samplePredictionGreatPlayer);
 
@@ -140,7 +141,7 @@ namespace MachineLearningBaseBallHOF
 
             using (var environment = new TlcEnvironment())
             {
-                var customSchema = "col=Label:BL:0 col=FullPlayerName:TX:1 col=YearsPlayed:R4:2 col=AB:R4:3 col=R:R4:4 col=H:R4:5 col=Doubles:R4:6 col=Triples:R4:7 col=HR:R4:8 col=RBI:R4:9 col=SB:R4:10 col=BattingAverage:R4:11 col=SluggingPct:R4:12 col=AllStarAppearances:R4:13 col=MVPs:R4:14 col=TripleCrowns:R4:15 col=GoldGloves:R4:16 col=MajorLeaguePlayerOfTheYearAwards:R4:17 col=LastYearPlayed:R4:18 col=PlayerID:R4:19 Separator=,";
+                var customSchema = "col=Label:BL:0 col=FullPlayerName:TX:1 col=YearsPlayed:R4:2 col=AB:R4:3 col=R:R4:4 col=H:R4:5 col=Doubles:R4:6 col=Triples:R4:7 col=HR:R4:8 col=RBI:R4:9 col=SB:R4:10 col=BattingAverage:R4:11 col=SluggingPct:R4:12 col=AllStarAppearances:R4:13 col=MVPs:R4:14 col=TripleCrowns:R4:15 col=GoldGloves:R4:16 col=MajorLeaguePlayerOfTheYearAwards:R4:17 col=TB:R4:18 col=LastYearPlayed:R4:19 col=PlayerID:R4:20 Separator=,";
                 var inputFile = new SimpleFileHandle(environment, validationDataPath, false, false);
                 var dataView = ImportTextData.ImportText(environment, new ImportTextData.Input { InputFile = inputFile, CustomSchema = customSchema }).Data;
 
@@ -162,6 +163,7 @@ namespace MachineLearningBaseBallHOF
                     cursor.Schema.TryGetColumnIndex("TripleCrowns", out int tripleCrownsCol);
                     cursor.Schema.TryGetColumnIndex("GoldGloves", out int goldGlovesCol);
                     cursor.Schema.TryGetColumnIndex("MajorLeaguePlayerOfTheYearAwards", out int majorLeaguePlayerOfTheYearAwardsCol);
+                    cursor.Schema.TryGetColumnIndex("TB", out int tbCol);
                     cursor.Schema.TryGetColumnIndex("PlayerID", out int idCol);
 
                     while (cursor.MoveNext())
@@ -230,6 +232,10 @@ namespace MachineLearningBaseBallHOF
                         var majorLeaguePlayerOfTheYearAwardsGetter = cursor.GetGetter<float>(majorLeaguePlayerOfTheYearAwardsCol);
                         float majorLeaguePlayerOfTheYearAwards = 0f;
                         majorLeaguePlayerOfTheYearAwardsGetter(ref majorLeaguePlayerOfTheYearAwards);
+                        // TB
+                        var tbGetter = cursor.GetGetter<float>(tbCol);
+                        float tb = 0f;
+                        tbGetter(ref tb);
                         // PlayerID column
                         var idGetter = cursor.GetGetter<float>(idCol);
                         float id = 0f;
@@ -251,6 +257,7 @@ namespace MachineLearningBaseBallHOF
                             R = r,
                             RBI = rbi,
                             SB = sb,
+                            TB = tb,
                             TripleCrowns = tripleCrowns,
                             Triples = triples,
                             YearsPlayed = yearsPlayed
