@@ -28,7 +28,7 @@ namespace MachineLearningBaseBallHOF
             var pipeline = new LearningPipeline();
 
             // 2) Add a Text Loader
-            pipeline.Add(new TextLoader<BaseballData>(trainingDataPath, separator: ",", allowQuotedStrings: false, trimWhitespace: true));
+            pipeline.Add(new TextLoader<BaseballData>(trainingDataPath, separator: ",", allowQuotedStrings: false));
 
             // 3) Create Features
             pipeline.Add(new ColumnConcatenator("Features", "YearsPlayed",
@@ -126,7 +126,7 @@ namespace MachineLearningBaseBallHOF
 
 
             // 7) Load Evaluation Data
-            var testData = new TextLoader<BaseballData>(validationDataPath, useHeader: false, separator: ",");
+            var testData = new TextLoader<BaseballData>(validationDataPath, separator: ",", allowQuotedStrings: false);
 
             // 8) Evaluate trained model with test data
             var evaluator = new BinaryClassificationEvaluator() { ProbabilityColumn = "Probability" };
