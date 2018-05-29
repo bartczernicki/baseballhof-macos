@@ -18,11 +18,15 @@ namespace MachineLearningBaseBallHOF
     {
         public static void Main(string[] args)
         {
+            Utils.PrintConsoleMessage("Starting Baseball HOF Prediction", true);
+
+            // MCC Evaluation metric
+            double mcc = 0.0;
+            double mccNumerator = 0.0, mccDenominator = 0.0;
+
             // Training & Validation/Dev text CSV files
             var trainingDataPath = "HOFTraining.txt";
             var validationDataPath = "HOFValidation.txt";
-
-            Utils.PrintConsoleMessage("Starting Baseball HOF Prediction", true);
 
             // 1) Create a new learning pipeline
             var pipeline = new LearningPipeline();
@@ -31,13 +35,15 @@ namespace MachineLearningBaseBallHOF
             pipeline.Add(new TextLoader<BaseballData>(trainingDataPath, separator: ",", allowQuotedStrings: false));
 
             // 3) Create Features
-            pipeline.Add(new ColumnConcatenator("Features", "YearsPlayed",
-            "AB", "R", "H", "Doubles", "Triples", "HR", "RBI", "SB",
-            "AllStarAppearances", "MVPs", "TripleCrowns", "GoldGloves", "MajorLeaguePlayerOfTheYearAwards", "TB"));
+            pipeline.Add(new ColumnConcatenator("Features", 
+                "YearsPlayed", "AB", 
+                "R", "H", "Doubles", "Triples", "HR", "RBI", "SB",
+                "AllStarAppearances", "MVPs", "TripleCrowns", "GoldGloves", "MajorLeaguePlayerOfTheYearAwards", "TB"));
 
             // pipeline.Add(new ColumnConcatenator("Features", "YearsPlayed"));
 
             // 4) Create new binary classifier (predict yes/no into Baseball HOF)
+            /*
             var classifier = new FastTreeBinaryClassifier()
             {
                 NumLeaves = 10,
@@ -48,9 +54,11 @@ namespace MachineLearningBaseBallHOF
                 Caching = Microsoft.ML.Models.CachingOptions.Memory,
                 OptimizationAlgorithm = BoostedTreeArgsOptimizationAlgorithmType.GradientDescent
             };
+            */
+
             // var classifier = new BinaryLogisticRegressor();
-            // var classifier = new FastForestBinaryClassifier();
-            //var classifier = new GeneralizedAdditiveModelBinaryClassifier();
+            var classifier = new FastForestBinaryClassifier();
+            // var classifier = new GeneralizedAdditiveModelBinaryClassifier();
 
             // Add the classifier to the pipeline
             pipeline.Add(classifier);
@@ -136,8 +144,10 @@ namespace MachineLearningBaseBallHOF
             var falsePostivePlayers = new List<Tuple<BaseballData, BaseballDataPrediction>>();
             // build a list of False Negatives - Players IN THE HOF, predicted by classifier not to be in HOF
             var falseNegativePlayers = new List<Tuple<BaseballData, BaseballDataPrediction>>();
-            // true Pos
+            // build a list of True Positives - Players IN THE HOF, predicted by classifier to be in HOF
             var truePositivePlayers = new List<Tuple<BaseballData, BaseballDataPrediction>>();
+            // build a list of True Negataives - Players not in the HOF, predicted by classifier not to be in HOF
+            var trueNegativePlayers = new List<Tuple<BaseballData, BaseballDataPrediction>>();
 
             using (var environment = new TlcEnvironment())
             {
@@ -270,6 +280,13 @@ namespace MachineLearningBaseBallHOF
                         {
                             truePositivePlayers.Add(new Tuple<BaseballData, BaseballDataPrediction>(baseBallData, prediction));
                         }
+
+                        // True Negatives
+                        if ((prediction.PredictedLabel == false) && (baseBallData.Label == false))
+                        {
+                            trueNegativePlayers.Add(new Tuple<BaseballData, BaseballDataPrediction>(baseBallData, prediction));
+                        }
+
                         // False Positive Prediction
                         if ((prediction.PredictedLabel == true) && (baseBallData.Label == false))
                         {
@@ -286,6 +303,17 @@ namespace MachineLearningBaseBallHOF
             }
 
             // 9) Print out Metrics (rounded to 4 decimals)
+            mccNumerator = truePositivePlayers.Count * trueNegativePlayers.Count - falsePostivePlayers.Count * falseNegativePlayers.Count;
+            mccDenominator = Math.Sqrt(
+                1.0 * (truePositivePlayers.Count + falsePostivePlayers.Count) * (truePositivePlayers.Count + falseNegativePlayers.Count) * (trueNegativePlayers.Count + falsePostivePlayers.Count) * (trueNegativePlayers.Count + falseNegativePlayers.Count)
+                                 );
+            mcc = mccNumerator / mccDenominator;
+
+            // Console.WriteLine(trueNegativePlayers.Count);
+            Console.WriteLine(mccNumerator);
+            Console.WriteLine(mccDenominator);
+            Console.WriteLine(mcc);
+
             Console.WriteLine("******************");
             Console.WriteLine("Evaluation Metrics");
             Console.WriteLine("******************");
@@ -293,6 +321,7 @@ namespace MachineLearningBaseBallHOF
             Console.WriteLine("Precision:  " + Math.Round(metrics.PositivePrecision, 4).ToString());
             Console.WriteLine("Recall:     " + Math.Round(metrics.PositiveRecall, 4).ToString());
             Console.WriteLine("Accuracy:   " + Math.Round(metrics.Accuracy, 4).ToString());
+            Console.WriteLine("MCC:        " + Math.Round(mcc, 4).ToString());
             Console.WriteLine("******************");
 
             Console.WriteLine();
