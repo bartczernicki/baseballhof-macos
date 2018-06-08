@@ -10,7 +10,7 @@ using Microsoft.ML.Transforms;
 using MachineLearningBaseBallHOF;
 using Microsoft.ML.Runtime.Data;
 using Microsoft.ML.Runtime.EntryPoints;
-
+using Microsoft.ML.Data;
 
 namespace MachineLearningBaseBallHOF
 {
@@ -32,18 +32,18 @@ namespace MachineLearningBaseBallHOF
             var pipeline = new LearningPipeline();
 
             // 2) Add a Text Loader
-            pipeline.Add(new TextLoader<BaseballData>(trainingDataPath, separator: ",", allowQuotedStrings: false));
+            var trainingLoader = new Microsoft.ML.Data.TextLoader(trainingDataPath).CreateFrom<BaseballData>(allowQuotedStrings: false, separator: ',');
+            pipeline.Add(trainingLoader);
 
             // 3) Create Features
             pipeline.Add(new ColumnConcatenator("Features", 
                 "YearsPlayed", "AB", 
                 "R", "H", "Doubles", "Triples", "HR", "RBI", "SB",
                 "AllStarAppearances", "MVPs", "TripleCrowns", "GoldGloves", "MajorLeaguePlayerOfTheYearAwards", "TB"));
-
             // pipeline.Add(new ColumnConcatenator("Features", "YearsPlayed"));
 
             // 4) Create new binary classifier (predict yes/no into Baseball HOF)
-            /*
+
             var classifier = new FastTreeBinaryClassifier()
             {
                 NumLeaves = 10,
@@ -54,10 +54,8 @@ namespace MachineLearningBaseBallHOF
                 Caching = Microsoft.ML.Models.CachingOptions.Memory,
                 OptimizationAlgorithm = BoostedTreeArgsOptimizationAlgorithmType.GradientDescent
             };
-            */
-
-            // var classifier = new BinaryLogisticRegressor();
-            var classifier = new FastForestBinaryClassifier();
+            // var classifier = new LinearSvmBinaryClassifier();
+            // var classifier = new FastForestBinaryClassifier();
             // var classifier = new GeneralizedAdditiveModelBinaryClassifier();
 
             // Add the classifier to the pipeline
@@ -71,16 +69,16 @@ namespace MachineLearningBaseBallHOF
             // Bad Player with poor historical numbers
             var samplePredictionBadPlayer = new BaseballData
             {
-                AB = 1000,
+                AB = 3000,
                 AllStarAppearances = 0,
                 FullPlayerName = "Bad Player",
-                R = 30,
-                H = 100,
-                Doubles = 10,
-                Triples = 10,
-                HR = 10,
-                RBI = 20,
-                SB = 5,
+                R = 90,
+                H = 300,
+                Doubles = 30,
+                Triples = 30,
+                HR = 30,
+                RBI = 60,
+                SB = 15,
                 BattingAverage = 0.1f,
                 SluggingPct = 0.25f,
                 PlayerID = 10101,
@@ -89,14 +87,14 @@ namespace MachineLearningBaseBallHOF
                 GoldGloves = 0,
                 MajorLeaguePlayerOfTheYearAwards = 0,
                 TripleCrowns = 0,
-                YearsPlayed = 2,
-                TB = 190
+                YearsPlayed = 3,
+                TB = 570
             };
             var result = model.Predict(samplePredictionBadPlayer);
 
             Console.WriteLine("Bad Baseball Player Prediction");
             Console.WriteLine("******************************");
-            Console.WriteLine("HOF Prediction: " + result.PredictedLabel.ToString() + " | " + "Probability: " + result.ProbabilityLabel);
+            Console.WriteLine("HOF Prediction: " + result.PredictedLabel.ToString() + " | " + "Probability: " + Math.Round(result.ProbabilityLabel, 7));
             Console.WriteLine();
 
 
@@ -134,7 +132,7 @@ namespace MachineLearningBaseBallHOF
 
 
             // 7) Load Evaluation Data
-            var testData = new TextLoader<BaseballData>(validationDataPath, separator: ",", allowQuotedStrings: false);
+            var testData = new Microsoft.ML.Data.TextLoader(validationDataPath).CreateFrom<BaseballData>(allowQuotedStrings: false, separator: ',');
 
             // 8) Evaluate trained model with test data
             var evaluator = new BinaryClassificationEvaluator() { ProbabilityColumn = "Probability" };
@@ -149,13 +147,24 @@ namespace MachineLearningBaseBallHOF
             // build a list of True Negataives - Players not in the HOF, predicted by classifier not to be in HOF
             var trueNegativePlayers = new List<Tuple<BaseballData, BaseballDataPrediction>>();
 
+
             using (var environment = new TlcEnvironment())
             {
-                var customSchema = "col=Label:BL:0 col=FullPlayerName:TX:1 col=YearsPlayed:R4:2 col=AB:R4:3 col=R:R4:4 col=H:R4:5 col=Doubles:R4:6 col=Triples:R4:7 col=HR:R4:8 col=RBI:R4:9 col=SB:R4:10 col=BattingAverage:R4:11 col=SluggingPct:R4:12 col=AllStarAppearances:R4:13 col=MVPs:R4:14 col=TripleCrowns:R4:15 col=GoldGloves:R4:16 col=MajorLeaguePlayerOfTheYearAwards:R4:17 col=TB:R4:18 col=LastYearPlayed:R4:19 col=PlayerID:R4:20 Separator=,";
-                var inputFile = new SimpleFileHandle(environment, validationDataPath, false, false);
-                var dataView = ImportTextData.ImportText(environment, new ImportTextData.Input { InputFile = inputFile, CustomSchema = customSchema }).Data;
+                // note: custom schema not needed anymore
+                // var customSchema = "col=Label:BL:0 col=FullPlayerName:TX:1 col=YearsPlayed:R4:2 col=AB:R4:3 col=R:R4:4 col=H:R4:5 col=Doubles:R4:6 col=Triples:R4:7 col=HR:R4:8 col=RBI:R4:9 col=SB:R4:10 col=BattingAverage:R4:11 col=SluggingPct:R4:12 col=AllStarAppearances:R4:13 col=MVPs:R4:14 col=TripleCrowns:R4:15 col=GoldGloves:R4:16 col=MajorLeaguePlayerOfTheYearAwards:R4:17 col=TB:R4:18 col=LastYearPlayed:R4:19 col=PlayerID:R4:20 Separator=,";
 
-                using (var cursor = dataView.GetRowCursor(col => true))
+                var loader = new Microsoft.ML.Data.TextLoader(validationDataPath).CreateFrom<BaseballData>(allowQuotedStrings: false, separator: ',');
+
+                Experiment experiment = environment.CreateExperiment();
+                ILearningPipelineDataStep output = loader.ApplyStep(null, experiment) as ILearningPipelineDataStep;
+
+                experiment.Compile();
+                loader.SetInput(environment, experiment);
+                experiment.Run();
+
+                IDataView data = experiment.GetOutput(output.Data);
+
+                using (var cursor = data.GetRowCursor(col => true))
                 {
                     cursor.Schema.TryGetColumnIndex("Label", out int labelCol);
                     cursor.Schema.TryGetColumnIndex("FullPlayerName", out int fullPlayerNameCol);
@@ -308,11 +317,9 @@ namespace MachineLearningBaseBallHOF
                 1.0 * (truePositivePlayers.Count + falsePostivePlayers.Count) * (truePositivePlayers.Count + falseNegativePlayers.Count) * (trueNegativePlayers.Count + falsePostivePlayers.Count) * (trueNegativePlayers.Count + falseNegativePlayers.Count)
                                  );
             mcc = mccNumerator / mccDenominator;
+            //Console.WriteLine(mccNumerator);
+            //Console.WriteLine(mccDenominator);
 
-            // Console.WriteLine(trueNegativePlayers.Count);
-            Console.WriteLine(mccNumerator);
-            Console.WriteLine(mccDenominator);
-            Console.WriteLine(mcc);
 
             Console.WriteLine("******************");
             Console.WriteLine("Evaluation Metrics");
