@@ -57,6 +57,7 @@ namespace MachineLearningBaseBallHOF
             // var classifier = new LinearSvmBinaryClassifier();
             // var classifier = new FastForestBinaryClassifier();
             // var classifier = new GeneralizedAdditiveModelBinaryClassifier();
+            // var classifier = new LightGbmBinaryClassifier { LearningRate = 0.02, MinDataPerLeaf = 4, VerboseEval = true };
 
             // Add the classifier to the pipeline
             pipeline.Add(classifier);
@@ -369,6 +370,22 @@ namespace MachineLearningBaseBallHOF
 
             //10) Persist trained model
             model.WriteAsync("baseballhof-model.mlnet").Wait();
+
+            //11) Convert to ONNX & persist
+            // will only work for FastTree, LightGBM, Logistic Regression
+            var onnxPath = "baseballhof-model.onnx";
+            var onnxAsJsonPath = "baseballhof-model.json";
+
+            OnnxConverter converter = new OnnxConverter()
+            {
+                InputsToDrop = new[] { "Label" },
+                OutputsToDrop = new[] { "Label", "Features" },
+                Onnx = onnxPath,
+                Json = onnxAsJsonPath,
+                Domain = "com.baseballsample"
+            };
+
+            converter.Convert(model);
         }
     }
 }
