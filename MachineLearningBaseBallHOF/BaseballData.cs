@@ -7,68 +7,67 @@ namespace MachineLearningBaseBallHOF
 {
     public class BaseballData
     {
-        [Column("0")]
-        [ColumnName("Label")]
+        [Column(ordinal: "0", name: "Label")]
         public bool Label;
 
-        [Column("1")]
+        [Column(ordinal: "1")]
         public string FullPlayerName;
 
-        [Column("2")]
+        [Column(ordinal: "2")]
         public float YearsPlayed;
 
-        [Column("3")]
+        [Column(ordinal: "3")]
         public float AB;
 
-        [Column("4")]
+        [Column(ordinal: "4")]
         public float R;
 
-        [Column("5")]
+        [Column(ordinal: "5")]
         public float H;
 
-        [Column("6")]
+        [Column(ordinal: "6")]
         public float Doubles;
 
-        [Column("7")]
+        [Column(ordinal: "7")]
         public float Triples;
 
-        [Column("8")]
+        [Column(ordinal: "8")]
         public float HR;
 
-        [Column("9")]
+        [Column(ordinal: "9")]
         public float RBI;
 
-        [Column("10")]
+        [Column(ordinal: "10")]
         public float SB;
 
-        [Column("11")]
+        [Column(ordinal: "11")]
         public float BattingAverage;
 
-        [Column("12")]
+        [Column(ordinal: "12")]
         public float SluggingPct;
 
-        [Column("13")]
+        [Column(ordinal: "13")]
         public float AllStarAppearances;
 
-        [Column("14")]
+        [Column(ordinal: "14")]
         public float MVPs;
 
-        [Column("15")]
+        [Column(ordinal: "15")]
         public float TripleCrowns;
 
-        [Column("16")]
+        [Column(ordinal: "16")]
         public float GoldGloves;
 
-        [Column("17")]
+        [Column(ordinal: "17")]
         public float MajorLeaguePlayerOfTheYearAwards;
 
-        [Column("18")]
+        [Column(ordinal: "18")]
         public float TB;
 
-        [Column("19")]
+        [Column(ordinal: "19")]
         public float LastYearPlayed;
 
-        [Column("20")]
+        [Column(ordinal: "20")]
         public float PlayerID;
 
         public override string ToString()

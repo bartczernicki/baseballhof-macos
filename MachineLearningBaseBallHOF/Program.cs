@@ -54,10 +54,16 @@ namespace MachineLearningBaseBallHOF
                 Caching = Microsoft.ML.Models.CachingOptions.Memory,
                 OptimizationAlgorithm = BoostedTreeArgsOptimizationAlgorithmType.GradientDescent
             };
+
             // var classifier = new LinearSvmBinaryClassifier();
             // var classifier = new FastForestBinaryClassifier();
             // var classifier = new GeneralizedAdditiveModelBinaryClassifier();
-            // var classifier = new LightGbmBinaryClassifier { LearningRate = 0.02, MinDataPerLeaf = 4, VerboseEval = true };
+            //var classifier = new LightGbmBinaryClassifier 
+            //{
+            //    NumLeaves = 5, 
+            //    NumBoostRound = 5, 
+            //    MinDataPerLeaf = 2
+            //};
 
             // Add the classifier to the pipeline
             pipeline.Add(classifier);
