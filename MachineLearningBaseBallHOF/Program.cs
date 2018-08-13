@@ -11,6 +11,7 @@ using MachineLearningBaseBallHOF;
 using Microsoft.ML.Runtime.Data;
 using Microsoft.ML.Runtime.EntryPoints;
 using Microsoft.ML.Data;
+using System.IO;
 
 namespace MachineLearningBaseBallHOF
 {
@@ -19,6 +20,10 @@ namespace MachineLearningBaseBallHOF
         public static void Main(string[] args)
         {
             Utils.PrintConsoleMessage("Starting Baseball HOF Prediction", true);
+
+            var currentDirectory = Directory.GetCurrentDirectory();
+            var onnxPath = Path.Combine(currentDirectory, "baseballhof-model.onnx");
+            var onnxAsJsonPath = Path.Combine(currentDirectory, "baseballhof-model.json");
 
             // MCC Evaluation metric
             double mcc = 0.0;
@@ -375,12 +380,14 @@ namespace MachineLearningBaseBallHOF
             }
 
             //10) Persist trained model
-            model.WriteAsync("baseballhof-model.mlnet").Wait();
+            var modelPath = Path.Combine(currentDirectory, "baseballhof-model.mlnet");
+            model.WriteAsync(modelPath).Wait();
 
             //11) Convert to ONNX & persist
             // will only work for FastTree, LightGBM, Logistic Regression
-            var onnxPath = "baseballhof-model.onnx";
-            var onnxAsJsonPath = "baseballhof-model.json";
+            // var onnxPath = Path.Combine(currentDirectory, "baseballhof-model.onnx");
+            //var onnxAsJsonPath = Path.Combine(currentDirectory, "baseballhof-model.json");
+
 
             OnnxConverter converter = new OnnxConverter()
             {
@@ -391,7 +398,7 @@ namespace MachineLearningBaseBallHOF
                 Domain = "com.baseballsample"
             };
 
-            converter.Convert(model);
+            //converter.Convert(model);
         }
     }
 }
