@@ -1,16 +1,11 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using Microsoft.ML;
 using Microsoft.ML.Models;
 using Microsoft.ML.Runtime;
-using Microsoft.ML.Runtime.Api;
 using Microsoft.ML.Trainers;
 using Microsoft.ML.Transforms;
-using MachineLearningBaseBallHOF;
 using Microsoft.ML.Runtime.Data;
-using Microsoft.ML.Runtime.EntryPoints;
-using Microsoft.ML.Data;
 using System.IO;
 
 namespace MachineLearningBaseBallHOF
@@ -398,7 +393,7 @@ namespace MachineLearningBaseBallHOF
                 Domain = "com.baseballsample"
             };
 
-            //converter.Convert(model);
+            converter.Convert(model);
         }
     }
 }
