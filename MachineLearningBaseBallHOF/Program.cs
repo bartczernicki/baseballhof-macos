@@ -24,9 +24,17 @@ namespace MachineLearningBaseBallHOF
             double mcc = 0.0;
             double mccNumerator = 0.0, mccDenominator = 0.0;
 
+            Console.WriteLine("Run Naive baseball data set?");
+            string consoleResponse = Console.ReadLine();
+
             // Training & Validation/Dev text CSV files
-            var trainingDataPath = "HOFTraining.txt";
-            var validationDataPath = "HOFValidation.txt";
+            var trainingDataPath = "HOFTrainingNaive.txt";
+            var validationDataPath = "HOFValidationNaive.txt";
+            if (consoleResponse.ToUpper() != "Y")
+            {
+                trainingDataPath = "HOFTraining.txt";
+                validationDataPath = "HOFValidation.txt";
+            }
 
             // 1) Create a new learning pipeline
             var pipeline = new LearningPipeline();
