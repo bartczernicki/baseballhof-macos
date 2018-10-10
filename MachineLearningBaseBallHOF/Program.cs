@@ -1,12 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
 using Microsoft.ML;
-using Microsoft.ML.Models;
+//using Microsoft.ML.Models;
 using Microsoft.ML.Runtime;
 using Microsoft.ML.Trainers;
 using Microsoft.ML.Transforms;
 using Microsoft.ML.Runtime.Data;
 using System.IO;
+using Microsoft.ML.Legacy;
+using Microsoft.ML.Legacy.Data;
+using Microsoft.ML.Legacy.Transforms;
+using Microsoft.ML.Legacy.Trainers;
+using Microsoft.ML.Legacy.Models;
 
 namespace MachineLearningBaseBallHOF
 {
@@ -40,7 +45,7 @@ namespace MachineLearningBaseBallHOF
             var pipeline = new LearningPipeline();
 
             // 2) Add a Text Loader
-            var trainingLoader = new Microsoft.ML.Data.TextLoader(trainingDataPath).CreateFrom<BaseballData>(allowQuotedStrings: false, separator: ',');
+            var trainingLoader = new Microsoft.ML.Legacy.Data.TextLoader(trainingDataPath).CreateFrom<BaseballData>(allowQuotedStrings: false, separator: ',');
             pipeline.Add(trainingLoader);
 
             // 3) Create Features
@@ -59,7 +64,7 @@ namespace MachineLearningBaseBallHOF
                 MinDocumentsInLeafs = 2,
                 BaggingSize = 5,
                 AllowEmptyTrees = true,
-                Caching = Microsoft.ML.Models.CachingOptions.Memory,
+                Caching = CachingOptions.Memory,
                 OptimizationAlgorithm = BoostedTreeArgsOptimizationAlgorithmType.GradientDescent
             };
 
@@ -147,7 +152,7 @@ namespace MachineLearningBaseBallHOF
 
 
             // 7) Load Evaluation Data
-            var testData = new Microsoft.ML.Data.TextLoader(validationDataPath).CreateFrom<BaseballData>(allowQuotedStrings: false, separator: ',');
+            var testData = new Microsoft.ML.Legacy.Data.TextLoader(validationDataPath).CreateFrom<BaseballData>(allowQuotedStrings: false, separator: ',');
 
             // 8) Evaluate trained model with test data
             var evaluator = new BinaryClassificationEvaluator() { ProbabilityColumn = "Probability" };
@@ -163,12 +168,12 @@ namespace MachineLearningBaseBallHOF
             var trueNegativePlayers = new List<Tuple<BaseballData, BaseballDataPrediction>>();
 
 
-            using (var environment = new TlcEnvironment())
+            using (var environment = new LocalEnvironment())
             {
                 // note: custom schema not needed anymore
                 // var customSchema = "col=Label:BL:0 col=FullPlayerName:TX:1 col=YearsPlayed:R4:2 col=AB:R4:3 col=R:R4:4 col=H:R4:5 col=Doubles:R4:6 col=Triples:R4:7 col=HR:R4:8 col=RBI:R4:9 col=SB:R4:10 col=BattingAverage:R4:11 col=SluggingPct:R4:12 col=AllStarAppearances:R4:13 col=MVPs:R4:14 col=TripleCrowns:R4:15 col=GoldGloves:R4:16 col=MajorLeaguePlayerOfTheYearAwards:R4:17 col=TB:R4:18 col=LastYearPlayed:R4:19 col=PlayerID:R4:20 Separator=,";
 
-                var loader = new Microsoft.ML.Data.TextLoader(validationDataPath).CreateFrom<BaseballData>(allowQuotedStrings: false, separator: ',');
+                var loader = new Microsoft.ML.Legacy.Data.TextLoader(validationDataPath).CreateFrom<BaseballData>(allowQuotedStrings: false, separator: ',');
 
                 Experiment experiment = environment.CreateExperiment();
                 ILearningPipelineDataStep output = loader.ApplyStep(null, experiment) as ILearningPipelineDataStep;
@@ -203,12 +208,12 @@ namespace MachineLearningBaseBallHOF
                     while (cursor.MoveNext())
                     {
                         // Label
-                        var labelGetter = cursor.GetGetter<DvBool>(labelCol);
-                        var label = default(DvBool);
+                        var labelGetter = cursor.GetGetter<bool>(labelCol);
+                        var label = default(bool);
                         labelGetter(ref label);
                         // Full Player Name
-                        var fullPlayerNameGetter = cursor.GetGetter<DvText>(fullPlayerNameCol);
-                        var fullPlayerName = default(DvText);
+                        var fullPlayerNameGetter = cursor.GetGetter<ReadOnlyMemory<char>>(fullPlayerNameCol);
+                        var fullPlayerName = default(ReadOnlyMemory<char>);
                         fullPlayerNameGetter(ref fullPlayerName);
                         // Years Played
                         var yearsPlayedGetter = cursor.GetGetter<float>(yearsPlayedCol);
@@ -285,7 +290,7 @@ namespace MachineLearningBaseBallHOF
                             HR = hr,
                             GoldGloves = goldGloves,
                             PlayerID = id,
-                            Label = label.IsTrue ? true : false,
+                            Label = label, //label.IsTrue ? true : false,
                             MajorLeaguePlayerOfTheYearAwards = majorLeaguePlayerOfTheYearAwards,
                             MVPs = mvps,
                             R = r,
@@ -401,7 +406,7 @@ namespace MachineLearningBaseBallHOF
                 Domain = "com.baseballsample"
             };
 
-            converter.Convert(model);
+            // converter.Convert(model);
         }
     }
 }
