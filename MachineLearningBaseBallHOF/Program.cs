@@ -29,7 +29,7 @@ namespace MachineLearningBaseBallHOF
             double mcc = 0.0;
             double mccNumerator = 0.0, mccDenominator = 0.0;
 
-            Console.WriteLine("Run Naive baseball data set?");
+            Console.WriteLine("Run Naive baseball data set? (Type Y or N and then press [Enter])");
             string consoleResponse = Console.ReadLine();
 
             // Training & Validation/Dev text CSV files
